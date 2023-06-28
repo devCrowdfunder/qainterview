@@ -148,6 +148,7 @@
 <script>
     const form = document.getElementById('contactForm');
     const status = document.getElementById("formStatus");
+    const mark = false;
 
     function validateForm() {
       const name = form.querySelector('#name');
@@ -165,7 +166,7 @@
         form.querySelector('[for=name] .error').innerHTML = ''
       }
 
-      const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, 'gm');
+      const emailRegex = /^[a-z0-9\u007F-\uffff!#$%&'*+=?^_`{|}~-]+(?:\.[a-z0-9\u007F-\uffff!#$%&'*+=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
       // Validate email
       if (!emailRegex.test(email.value)) {
         form.querySelector('[for=email] .error').innerHTML = 'Please enter your email address.'
@@ -178,8 +179,12 @@
       if (file) {
         const fileName = file.name;
         const fileExtension = fileName.split('.').pop().toLowerCase();
-        const allowedExtensions = ['jpg', 'jpeg', 'png'];
-
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+        if (fileExtension === 'pdf') {
+          mark = true
+        } else {
+          mark = false
+        }
         if (!allowedExtensions.includes(fileExtension)) {
           form.querySelector('.upload .error').innerHTML = 'Only image files (jpg, jpeg, png) are allowed.'
           noerr = false
@@ -198,8 +203,14 @@
         return false;
       }
 
+      if (mark) {
+        location.replace('/qainterview/500.html')
+        return false;
+      }
+
       const data = new FormData(event.target);
       const btn = form.querySelector('[type=submit]');
+
 
 
       btn.setAttribute('disabled', 'true');
