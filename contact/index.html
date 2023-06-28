@@ -95,16 +95,13 @@
     <main class="pb7" role="main">
 
   <div class="flex-l mt2 mw8 center">
-    <article class="center cf pv5 ph3 ph4-ns mw7">
+    <article class="center cf pv5 ph3 ph4-ns mw7" style="min-width: 70vw;">
       <header>
         <h1 class="f1">
           Contact
         </h1>
       </header>
       <div class="nested-copy-line-height lh-copy f4 nested-links mid-gray">
-        <!-- raw HTML omitted -->
-
-
 
 <form id="contactForm" class="black-80 sans-serif" accept-charset="UTF-8" action="https://formspree.io/f/mqkvzbwz" method="POST" role="form">
 
@@ -120,13 +117,13 @@
     <label class="f6 b db mb1 mt3 sans-serif mid-gray" for="message">Message</label>
     <textarea id="message" name="message" class="w-100 f5 pv3 ph3 bg-light-gray bn h4" aria-labelledby="message"></textarea>
 
-    <label class="f6 b db mb1 mt3 sans-serif mid-gray">
+    <label class="f6 b db mb1 mt3 sans-serif mid-gray mb5">
       Your file:
       <input type="file" id="upload" name="upload">
     </label>
 
     <input class="db w-100 mv2 white pa3 bn hover-shadow hover-bg-black bg-animate bg-black" type="submit" value="Send" />
-
+    <p id="formStatus"></p>
 </form>
 
 
@@ -147,6 +144,41 @@
 </div>
   </div>
 </footer>
+
+<script>
+    var form = document.getElementById("contactForm");
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      var status = document.getElementById("formStatus");
+      var data = new FormData(event.target);
+      fetch(event.target.action, {
+        method: form.method,
+        body: data,
+        headers: {
+            'Accept': 'application/json'
+        }
+      }).then(response => {
+        if (response.ok) {
+          status.innerHTML = "Thanks John for your submission!";
+          form.reset()
+        } else {
+          response.json().then(data => {
+            if (Object.hasOwn(data, 'errors')) {
+              status.innerHTML = data["errors"].map(error => error["message"]).join(", ")
+            } else {
+              status.innerHTML = "Oops! There was a problem submitting your form"
+            }
+          })
+        }
+      }).catch(error => {
+        status.innerHTML = "Oops! There was a problem submitting your form"
+      });
+    }
+    form.addEventListener("submit", handleSubmit)
+
+
+</script>
 
   </body>
 </html>
