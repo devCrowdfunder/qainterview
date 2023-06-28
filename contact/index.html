@@ -155,22 +155,21 @@
       // const message = form.querySelector('#message');
       const fileInput = form.querySelector('#upload');
       const file = fileInput.files[0];
-
+      let noerr = true
       // Validate name
       if (name.value === '') {
         form.querySelector('[for=name] .error').innerHTML = 'Name required'
         name.focus();
-
-        return false;
+        noerr = false
       } else {
         form.querySelector('[for=name] .error').innerHTML = ''
       }
 
       const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, 'gm');
       // Validate email
-      if (email.value === "" && !emailRegex.test(email.value)) {
+      if (!emailRegex.test(email.value)) {
         form.querySelector('[for=email] .error').innerHTML = 'Please enter your email address.'
-        return false;
+        noerr = false
       } else {
         form.querySelector('[for=email] .error').innerHTML = ''
       }
@@ -183,13 +182,13 @@
 
         if (!allowedExtensions.includes(fileExtension)) {
           form.querySelector('.upload .error').innerHTML = 'Only image files (jpg, jpeg, png) are allowed.'
-          return false;
+          noerr = false
         }
       } else {
         form.querySelector('.upload .error').innerHTML = ''
       }
 
-      return true;
+      return noerr;
     }
 
     async function handleSubmit(event) {
