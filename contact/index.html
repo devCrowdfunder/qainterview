@@ -105,24 +105,25 @@
 
     <p id="formStatus" class="f4"></p>
 <form id="contactForm" novalidate class="black-80 sans-serif" accept-charset="UTF-8" action="https://formspree.io/f/mqkvzbwz" method="POST" role="form" enctype="multipart/form-data">
-    <label class="f6 b db mb1 mt3 sans-serif mid-gray"  for="name">Your Name</label>
+    <label class="f6 b db mb1 mt3 sans-serif mid-gray"  for="name">Your Name <span class="error" style="color: red; padding-left: 10px;"></span></label>
     <input type="text" id="name" name="name" class="w-100 f5 pv3 ph3 bg-light-gray bn"  required placeholder=" "  aria-labelledby="name"/>
 
-    <label class="f6 b db mb1 mt3 sans-serif mid-gray" for="email">Email Address</label>
+    <label class="f6 b db mb1 mt3 sans-serif mid-gray" for="email">Email Address<span class="error" style="color: red; padding-left: 10px;"></span></label>
     <input type="email" id="email" name="email" class="w-100 f5 pv3 ph3 bg-light-gray bn"  required placeholder=" "  aria-labelledby="email"/>
     <div class="requirements f6 gray glow i ph3 overflow-hidden">
       An email address is required.
     </div>
 
-    <label class="f6 b db mb1 mt3 sans-serif mid-gray" for="message">Message</label>
+    <label class="f6 b db mb1 mt3 sans-serif mid-gray" for="message">Message<span class="error" style="color: red; padding-left: 10px;"></span></label>
     <textarea id="message" name="message" class="w-100 f5 pv3 ph3 bg-light-gray bn h4" aria-labelledby="message"></textarea>
 
-    <label class="f6 b db mb1 mt3 sans-serif mid-gray mb5">
-      Your image or pdf:
+    <label class="upload" class="f6 b db mb1 mt3 sans-serif mid-gray mb5">
+      Your image or pdf: <span class="error" style="color: red; padding-left: 10px;"></span>
       <input type="file" id="upload" name="upload" accept="image/*,.pdf">
     </label>
 
-    <input class="db w-100 mv2 white pa3 bn hover-shadow hover-bg-black bg-animate bg-black" type="submit" value="Send" />
+    <button class="db w-100 mv2 white pa3 bn hover-shadow hover-bg-black bg-animate bg-black" type="submit" form="contactForm">Send</button>
+
 </form>
 
 
@@ -146,25 +147,32 @@
 
 <script>
     const form = document.getElementById('contactForm');
+    const status = document.getElementById("formStatus");
 
     function validateForm() {
-      const name = form.querySelector('#name').value;
-      const email = form.querySelector('#email').value;
-      const message = form.querySelector('#message').value;
+      const name = form.querySelector('#name');
+      const email = form.querySelector('#email');
+      // const message = form.querySelector('#message');
       const fileInput = form.querySelector('#upload');
       const file = fileInput.files[0];
 
       // Validate name
-      if (name === '') {
-        alert('Please enter your name.');
+      if (name.value === '') {
+        form.querySelector('[for=name] .error').innerHTML = 'Name required'
+        name.focus();
+
         return false;
+      } else {
+        form.querySelector('[for=name] .error').innerHTML = ''
       }
 
       const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, 'gm');
       // Validate email
-      if (email === "" && !emailRegex.test(email)) {
-        alert('Please enter your email address.');
+      if (email.value === "" && !emailRegex.test(email.value)) {
+        form.querySelector('[for=email] .error').innerHTML = 'Please enter your email address.'
         return false;
+      } else {
+        form.querySelector('[for=email] .error').innerHTML = ''
       }
 
       // Validate file
@@ -174,9 +182,11 @@
         const allowedExtensions = ['jpg', 'jpeg', 'png'];
 
         if (!allowedExtensions.includes(fileExtension)) {
-          alert('Only image files (jpg, jpeg, png) are allowed.');
+          form.querySelector('.upload .error').innerHTML = 'Only image files (jpg, jpeg, png) are allowed.'
           return false;
         }
+      } else {
+        form.querySelector('.upload .error').innerHTML = ''
       }
 
       return true;
@@ -189,7 +199,6 @@
         return false;
       }
 
-      const status = document.getElementById("formStatus");
       const data = new FormData(event.target);
       const btn = form.querySelector('[type=submit]');
 
